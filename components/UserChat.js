@@ -12,7 +12,7 @@ const UserChat = ({ item }) => {
   const fetchMessages = async () => {
     try {
       const response = await fetch(
-        `http://192.168.128.105:4000/messages/${userId}/${item._id}`
+        `https://klicko-backend.onrender.com/messages/${userId}/${item._id}`
       );
       const data = await response.json();
       if (response.ok) {
@@ -75,7 +75,10 @@ const UserChat = ({ item }) => {
       <Image
         style={{ width: 50, height: 50, borderRadius: 25, reSizeMode: "cover" }}
         source={{
-          uri: `http://192.168.128.105:4000/${item?.image.replace(/\\/g, "/")}`,
+          uri: `https://klicko-backend.onrender.com/${item?.image.replace(
+            /\\/g,
+            "/"
+          )}`,
         }}
       />
       <View style={{ flex: 1 }}>

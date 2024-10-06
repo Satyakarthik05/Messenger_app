@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { StyleSheet } from "react-native";
 import StackNavigator from "./StackNavigator";
 import { StatusBar } from "expo-status-bar";
-import { UserContext } from "../messenger/UserContext";
+// import { UserContext } from "../messenger/UserContext";
+import { UserContext } from "./UserContext";
 
 export default function App() {
   return (

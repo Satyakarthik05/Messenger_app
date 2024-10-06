@@ -20,6 +20,7 @@ const RegisterScreen = () => {
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [profilePhoto, setProfilePhoto] = useState(null);
+  const [disabled, setDisabled] = useState(false);
 
   const selectProfilePhoto = async () => {
     let permissionResult =
@@ -67,6 +68,7 @@ const RegisterScreen = () => {
   };
 
   const handleRegister = async () => {
+    setDisabled(true);
     try {
       const user = {
         name: name,
@@ -74,16 +76,27 @@ const RegisterScreen = () => {
         password: password,
       };
 
+      // Create FormData object
       const formData = new FormData();
-      const imageBlob = await convertUriToBlob(profilePhoto);
-      formData.append("image", imageBlob, "profile.jpg"); // Add the image file to the form data
 
+      // Convert image URI to Blob
+      const imageBlob = await convertUriToBlob(profilePhoto);
+
+      // Append image to FormData
+      formData.append("image", {
+        uri: profilePhoto, // URI of the image
+        type: "image/jpeg", // MIME type of the image
+        name: "profile.jpg", // Name of the image
+      });
+
+      // Append other user data
       for (const key in user) {
-        formData.append(key, user[key]); // Append other user data
+        formData.append(key, user[key]);
       }
 
+      // Make the API request
       const response = await axios.post(
-        "http://192.168.128.105:4000/user/register",
+        "https://klicko-backend.onrender.com/user/register",
         formData,
         {
           headers: {
@@ -97,11 +110,14 @@ const RegisterScreen = () => {
         "Registration successful",
         "You have been registered successfully. Login now."
       );
+
+      // Clear form fields
       setName("");
       setEmail("");
       setPassword("");
       setProfilePhoto(null);
       navigation.navigate("Login");
+      setDisabled(false);
     } catch (err) {
       Alert.alert("Registration failed", "Registration was unsuccessful");
       console.error("Registration failed", err);
@@ -201,7 +217,11 @@ const RegisterScreen = () => {
             value={password}
             onChangeText={(text) => setPassword(text)}
           />
-          <Pressable onPress={handleRegister} style={styles.registerButton}>
+          <Pressable
+            onPress={handleRegister}
+            style={styles.registerButton}
+            disabled={disabled}
+          >
             <Text style={styles.registerButtonText}>Register</Text>
           </Pressable>
           <Pressable

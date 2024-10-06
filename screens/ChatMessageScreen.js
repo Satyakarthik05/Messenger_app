@@ -33,6 +33,7 @@ const ChatMessageScreen = () => {
   const [selectImage, setselectImage] = useState("");
   const { reciepentId } = route.params;
   const { userId, setUserId } = useContext(UserType);
+  const socketListenerAttached = useRef(false);
 
   const scrollViewRef = useRef(null);
   const socket = useRef(null);
@@ -58,10 +59,13 @@ const ChatMessageScreen = () => {
       }
 
       // Make a POST request to your backend API
-      const response = await fetch("http://192.168.128.105:4000/messages", {
-        method: "POST",
-        body: formData,
-      });
+      const response = await fetch(
+        "https://klicko-backend.onrender.com/messages",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
 
       if (!response.ok) {
         const errorResponse = await response.json();
@@ -91,7 +95,7 @@ const ChatMessageScreen = () => {
   useEffect(() => {
     // Initialize socket connection only once
     if (!socket.current) {
-      socket.current = io("http://192.168.128.105:4000", {
+      socket.current = io("https://klicko-backend.onrender.com", {
         withCredentials: true,
         transports: ["websocket"],
       });
@@ -101,30 +105,30 @@ const ChatMessageScreen = () => {
         senderId: userId,
         recepientId: reciepentId,
       });
+    }
 
-      // Listener for new messages
+    // Attach listener only once
+    if (!socketListenerAttached.current) {
       const messageListener = (newMessage) => {
         setmessages((prevMessages) => {
-          // Check if the message already exists
           const messageExists = prevMessages.some(
             (msg) => msg._id === newMessage._id
           );
-          // If it doesn't exist, add it to the state
           if (!messageExists) {
             return [...prevMessages, newMessage];
           }
-          // Return previous messages if it exists
           return prevMessages;
         });
         scrollToBottom(); // Scroll to bottom on new message
       };
 
-      // Attach listener
       socket.current.on("newMessage", messageListener);
+      socketListenerAttached.current = true; // Ensure listener is attached only once
 
       // Clean up listener on unmount
       return () => {
         socket.current.off("newMessage", messageListener);
+        socketListenerAttached.current = false; // Reset when component unmounts
       };
     }
 
@@ -159,28 +163,39 @@ const ChatMessageScreen = () => {
   const fetchMessages = async () => {
     try {
       const response = await fetch(
-        `http://192.168.128.105:4000/messages/${userId}/${reciepentId}`
+        `https://klicko-backend.onrender.com/messages/${userId}/${reciepentId}`
       );
       const data = await response.json();
       if (response.ok) {
-        setmessages(data);
+        setmessages((prevMessages) => {
+          // Combine previous messages with newly fetched messages and remove duplicates
+          const allMessages = [...prevMessages, ...data];
+          const uniqueMessages = allMessages.reduce((acc, curr) => {
+            if (!acc.some((msg) => msg._id === curr._id)) {
+              acc.push(curr);
+            }
+            return acc;
+          }, []);
+          return uniqueMessages;
+        });
       } else {
-        console.log("error", response.status.message);
+        console.log("Error:", response.statusText);
       }
     } catch (error) {
-      console.log(error);
+      console.log("Fetch error:", error);
     }
   };
 
+  // Fetch messages initially on component mount
   useEffect(() => {
     fetchMessages();
-  }, []);
+  }, [userId, reciepentId]);
 
   useEffect(() => {
     const fetchReciepentData = async () => {
       try {
         const response = await fetch(
-          `http://192.168.128.105:4000/user/${reciepentId}`
+          `https://klicko-backend.onrender.com/user/${reciepentId}`
         );
 
         const data = await response.json();
@@ -204,7 +219,7 @@ const ChatMessageScreen = () => {
       headerLeft: () => (
         <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
           <Ionicons
-            onPress={() => navigation.goBack()}
+            onPress={() => navigation.navigate("Chats")}
             name="arrow-back"
             size={24}
             color="black"
@@ -226,7 +241,7 @@ const ChatMessageScreen = () => {
                   resizeMode: "cover",
                 }}
                 source={{
-                  uri: `http://192.168.128.105:4000/${reciepentData?.image.replace(
+                  uri: `https://klicko-backend.onrender.com/${reciepentData?.image.replace(
                     /\\/g,
                     "/"
                   )}`,
@@ -260,7 +275,7 @@ const ChatMessageScreen = () => {
   const deleteMessages = async (messageIds) => {
     try {
       const response = await fetch(
-        "http://192.168.128.105:4000/deletemessages",
+        "https://klicko-backend.onrender.com/deletemessages",
         {
           method: "POST",
           headers: {
@@ -366,7 +381,7 @@ const ChatMessageScreen = () => {
                 {item.messageType === "text" ? (
                   <Text
                     style={{
-                      fontSize: 13,
+                      fontSize: 16,
                       textAlign: isSelected ? "right" : "left",
                     }}
                   >
@@ -432,13 +447,13 @@ const ChatMessageScreen = () => {
             marginHorizontal: 8,
           }}
         >
-          <Entypo
+          {/* <Entypo
             name="camera"
             size={24}
             color="gray"
             onPress={() => pickImage()}
           />
-          <Feather name="mic" size={24} color="gray" />
+          <Feather name="mic" size={24} color="gray" /> */}
         </View>
         <Pressable
           style={{

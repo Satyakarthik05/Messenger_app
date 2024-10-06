@@ -8,6 +8,8 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import User from "../components/User";
 import { UserType } from "../UserContext";
+import logo from "../assets/app_logo2.png";
+import { Image } from "react-native";
 
 const HomeScreen = () => {
   const navigation = useNavigation();
@@ -17,7 +19,28 @@ const HomeScreen = () => {
     navigation.setOptions({
       headerTitle: "",
       headerLeft: () => (
-        <Text style={{ fontSize: 16, fontWeight: "Bold" }}>Switch text</Text>
+        <View style={{ flexDirection: "row" }}>
+          <Image
+            source={logo}
+            style={{
+              width: 30,
+              height: 30,
+              marginLeft: 2,
+              borderRadius: 50,
+              marginTop: 5,
+            }}
+          />
+          <Text
+            style={{
+              fontSize: 28,
+              fontWeight: "800",
+              marginLeft: 5,
+              color: "purple",
+            }}
+          >
+            Klicko
+          </Text>
+        </View>
       ),
       headerRight: () => (
         <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
@@ -50,7 +73,7 @@ const HomeScreen = () => {
 
         try {
           const response = await axios.get(
-            `http://192.168.128.105:4000/users/${userId}`
+            `https://klicko-backend.onrender.com/users/${userId}`
           );
           setusers(response.data);
         } catch (error) {

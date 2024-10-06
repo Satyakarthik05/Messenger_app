@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "messenger",
-    "slug": "messenger",
+    "name": "Klicko",
+    "slug": "Klicko",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/app_logo2.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
@@ -24,12 +24,21 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/splash.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ],
+      "package": "com.satyakarthik.messenger"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/app_logo2.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "487fffe3-2034-45b6-a516-2ae413218138"
+      }
     }
   }
 }

@@ -3,6 +3,8 @@ import React, { useEffect, useState, useContext } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { UserType } from "../UserContext";
 import UserChat from "../components/UserChat";
+import Entypo from "@expo/vector-icons/Entypo";
+
 const ChatsScreen = () => {
   const [acceptedFriends, setAcceptedFriends] = useState([]);
   const { userId, setUserId } = useContext(UserType);
@@ -12,7 +14,7 @@ const ChatsScreen = () => {
     const acceptedFriendsList = async () => {
       try {
         const response = await fetch(
-          `http://192.168.128.105:4000/accepted-friends/${userId}`
+          `https://klicko-backend.onrender.com/accepted-friends/${userId}`
         );
 
         // Await the response.json() to get the data
@@ -35,9 +37,23 @@ const ChatsScreen = () => {
   return (
     <ScrollView>
       <Pressable showsVerticalScrollIndicator={false}>
-        {acceptedFriends.map((item, index) => (
-          <UserChat key={index} item={item} />
-        ))}
+        {acceptedFriends.length === 0 ? (
+          <View style={{ alignItems: "center", justifyContent: "center" }}>
+            <Entypo
+              name="chat"
+              size={24}
+              color="black"
+              style={{ fontSize: 60 }}
+            />
+            <Text style={{ marginTop: 10, fontSize: 20 }}>
+              No friends to chat
+            </Text>
+          </View>
+        ) : (
+          acceptedFriends.map((item, index) => (
+            <UserChat key={index} item={item} />
+          ))
+        )}
       </Pressable>
     </ScrollView>
   );

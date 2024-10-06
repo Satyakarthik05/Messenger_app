@@ -10,6 +10,7 @@ const LoginScreen = () => {
   const [email, setemail] = useState("");
   const [password, setpassword] = useState("");
   const [invalidUser, setInvalidUser] = useState("");
+  const [disabled, setDisabled] = useState(false);
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -29,19 +30,21 @@ const LoginScreen = () => {
   }, []);
 
   const handleLogin = () => {
+    setDisabled(true);
     const user = {
       email: email,
       password: password,
     };
 
     axios
-      .post("http://192.168.128.105:4000/user/login", user)
+      .post("https://klicko-backend.onrender.com/user/login", user)
       .then((response) => {
         console.log(response);
         const token = response.data.token;
         AsyncStorage.setItem("authToken", token);
         Alert.alert("Login success", "user Login successfully");
         navigation.navigate("Home");
+        setDisabled(false);
       })
       .catch((error) => {
         console.log(error.response.data.message);
@@ -122,6 +125,7 @@ const LoginScreen = () => {
 
           <Pressable
             onPress={handleLogin}
+            disabled={disabled}
             style={{
               width: 200,
               backgroundColor: "#4A55A2",

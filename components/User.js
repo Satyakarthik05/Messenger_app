@@ -14,7 +14,7 @@ const User = ({ item }) => {
     const fetchFriendRequests = async () => {
       try {
         const response = await fetch(
-          `http://192.168.128.105:4000/friend-request/sent/${userId}`
+          `https://klicko-backend.onrender.com/friend-request/sent/${userId}`
         );
         const data = await response.json();
 
@@ -34,7 +34,7 @@ const User = ({ item }) => {
     const fetchUserFriends = async () => {
       try {
         const response = await fetch(
-          `http://192.168.128.105:4000/friends/${userId}`
+          `https://klicko-backend.onrender.com/friends/${userId}`
         );
         const data = await response.json();
 
@@ -58,7 +58,7 @@ const User = ({ item }) => {
 
     try {
       const response = await axios.post(
-        "http://192.168.128.105:4000/user/friendreq",
+        "https://klicko-backend.onrender.com/user/friendreq",
         fri
       );
       if (response.status === 200) {
@@ -78,7 +78,7 @@ const User = ({ item }) => {
       <View>
         <Image
           source={{
-            uri: `http://192.168.128.105:4000/${item?.image.replace(
+            uri: `https://klicko-backend.onrender.com/${item?.image.replace(
               /\\/g,
               "/"
             )}`,
