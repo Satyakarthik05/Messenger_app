@@ -9,7 +9,9 @@ const User = ({ item }) => {
   const [requestSent, setRequestSent] = useState(false);
   const [friendRequests, setFriendRequests] = useState([]);
   const [userFriends, setUserFriends] = useState([]);
+  const [disabled, setDisabled] = useState(false); // Fix: change 'disable' to 'disabled'
 
+  // Fetch sent friend requests
   useEffect(() => {
     const fetchFriendRequests = async () => {
       try {
@@ -30,6 +32,7 @@ const User = ({ item }) => {
     fetchFriendRequests();
   }, [userId]);
 
+  // Fetch user friends
   useEffect(() => {
     const fetchUserFriends = async () => {
       try {
@@ -50,8 +53,13 @@ const User = ({ item }) => {
     fetchUserFriends(); // Call the function here
   }, [userId]);
 
+  // Send friend request
   const sendFriendRequest = async (currentUserId, selectUserId) => {
-    const fri = {
+    if (disabled) return; // Prevent multiple presses
+
+    setDisabled(true); // Disable button immediately on press
+
+    const friendRequestData = {
       currentUserId: currentUserId,
       selectUserId: selectUserId,
     };
@@ -59,15 +67,16 @@ const User = ({ item }) => {
     try {
       const response = await axios.post(
         "https://klicko-backend.onrender.com/user/friendreq",
-        fri
+        friendRequestData
       );
       if (response.status === 200) {
-        // Check for successful response
         console.log("User request sent");
-        setRequestSent(true);
+        setRequestSent(true); // Mark request as sent
       }
     } catch (error) {
       console.log(error);
+    } finally {
+      setDisabled(false); // Re-enable button after request completes
     }
   };
 
@@ -75,13 +84,16 @@ const User = ({ item }) => {
     <Pressable
       style={{ flexDirection: "row", alignItems: "center", marginVertical: 10 }}
     >
+      {/* Display user image */}
       <View>
         <Image
           source={{
-            uri: `https://klicko-backend.onrender.com/${item?.image.replace(
-              /\\/g,
-              "/"
-            )}`,
+            uri: item?.image
+              ? `https://klicko-backend.onrender.com/${item.image.replace(
+                  /\\/g,
+                  "/"
+                )}`
+              : "https://via.placeholder.com/50", // Fallback image if user has no DP
           }}
           style={{
             width: 50,
@@ -91,11 +103,13 @@ const User = ({ item }) => {
           }}
         />
       </View>
+
       <View style={{ marginLeft: 12, flex: 1 }}>
         <Text style={{ fontWeight: "bold" }}>{item?.name}</Text>
         <Text style={{ marginTop: 5, color: "gray" }}>{item?.email}</Text>
       </View>
 
+      {/* Conditional button rendering based on friend status */}
       {userFriends.includes(item._id) ? (
         <Pressable
           style={{
@@ -110,6 +124,7 @@ const User = ({ item }) => {
       ) : requestSent ||
         friendRequests.some((friend) => friend._id === item._id) ? (
         <Pressable
+          disabled={true} // Fix: use 'disabled' instead of 'disable'
           style={{
             backgroundColor: "gray",
             padding: 10,
@@ -124,6 +139,7 @@ const User = ({ item }) => {
       ) : (
         <Pressable
           onPress={() => sendFriendRequest(userId, item._id)}
+          disabled={disabled} // Disable button after sending request
           style={{
             backgroundColor: "#567189",
             padding: 10,

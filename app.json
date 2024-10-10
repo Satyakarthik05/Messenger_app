@@ -1,13 +1,13 @@
 {
   "expo": {
     "name": "Klicko",
-    "slug": "Klicko",
+    "slug": "klicko",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/app_logo2.png",
+    "icon": "./assets/app_logo2.jpg",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/splash.jpg",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -24,7 +24,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/splash.png",
+        "foregroundImage": "./assets/app_logo2.jpg",
         "backgroundColor": "#ffffff"
       },
       "permissions": [
@@ -33,12 +33,13 @@
       "package": "com.satyakarthik.messenger"
     },
     "web": {
-      "favicon": "./assets/app_logo2.png"
+      "favicon": "./assets/app_logo2.jpg"
     },
     "extra": {
       "eas": {
-        "projectId": "487fffe3-2034-45b6-a516-2ae413218138"
+        "projectId": "81c174cf-ae98-4d28-9dee-8646d491cb4a"
       }
-    }
+    },
+    "owner": "satyakarthik"
   }
 }

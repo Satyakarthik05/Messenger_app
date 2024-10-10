@@ -1,5 +1,5 @@
 import React from "react";
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import LoginScreen from "./screens/LoginScreen";
 import RegisterScreen from "./screens/RegisterScreen";
@@ -7,6 +7,7 @@ import HomeScreen from "./screens/HomeScreen";
 import FriendsScreens from "./screens/FriendsScreens";
 import ChatsScreen from "./screens/ChatsScreen";
 import ChatMessageScreen from "./screens/ChatMessageScreen";
+// import { useNavigation } from "@react-navigation/native";
 
 const StackNavigator = () => {
   const Stack = createNativeStackNavigator();

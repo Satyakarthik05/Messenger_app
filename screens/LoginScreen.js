@@ -50,6 +50,9 @@ const LoginScreen = () => {
         console.log(error.response.data.message);
         Alert.alert("Login failed", "User not loged in");
         setInvalidUser(error.response.data.message);
+        setDisabled(false);
+        setemail("");
+        setpassword("");
       });
   };
   console.log(invalidUser);
